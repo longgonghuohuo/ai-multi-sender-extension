@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Multi Sender</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      background: rgba(26, 26, 26, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+    }
+
+    .header {
+      padding: 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-bottom: none;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .ai-status {
+      padding: 25px 30px;
+      flex-shrink: 0;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .status-title {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ai-card {
+      background: #1a1a1a;
+      border: 2px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      transition: all 0.3s;
+    }
+
+    .ai-card.active {
+      border-color: #4caf50;
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+    }
+
+    .ai-card.inactive {
+      border-color: #f44336;
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(244, 67, 54, 0.05) 100%);
+    }
+
+    .ai-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .ai-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .ai-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chatgpt-badge { background: #10a37f; }
+    .gemini-badge { background: #4285f4; }
+    .claude-badge { background: #cc785c; }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .status-dot.active {
+      background: #4caf50;
+      box-shadow: 0 0 10px #4caf50;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.inactive {
+      background: #f44336;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .ai-info {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .ai-info.success {
+      color: #4caf50;
+    }
+
+    .ai-info.error {
+      color: #f44336;
+    }
+
+    .input-area {
+      flex: 1;
+      padding: 25px 30px 30px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .input-label {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    #questionInput {
+      flex: 1;
+      background: #1a1a1a;
+      border: 2px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 15px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      transition: all 0.3s;
+      min-height: 150px;
+    }
+
+    #questionInput:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+
+    #questionInput::placeholder {
+      color: #666;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:disabled {
+      background: #2a2a2a;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #3a3a3a;
+    }
+
+    .btn-secondary:hover {
+      background: #3a3a3a;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #2a2a2a;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+      max-width: 90%;
+      font-size: 14px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success { border-left: 4px solid #4caf50; }
+    .toast.error { border-left: 4px solid #f44336; }
+    .toast.info { border-left: 4px solid #2196f3; }
+
+    .hint {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .kbd {
+      background: #2a2a2a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #fff;
+    }
+
+    .open-tabs-btn {
+      width: 100%;
+      padding: 12px;
+      background: #2a2a2a;
+      border: 2px dashed #3a3a3a;
+      border-radius: 8px;
+      color: #999;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 15px;
+    }
+
+    .open-tabs-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <span>🤖</span>
+        <span>AI Multi Sender</span>
+      </div>
+      <div class="subtitle">一键发送到多个AI - 全屏控制台</div>
+    </div>
+
+  <div class="ai-status">
+    <div class="status-title">
+      <span>🎯</span>
+      <span>AI 状态</span>
+    </div>
+
+    <div class="ai-card inactive" id="chatgptCard">
+      <div class="ai-card-header">
+        <div class="ai-name">
+          <div class="ai-badge chatgpt-badge">G</div>
+          <span>ChatGPT</span>
+        </div>
+        <div class="status-dot inactive"></div>
+      </div>
+      <div class="ai-info error">未检测到</div>
+    </div>
+
+    <div class="ai-card inactive" id="claudeCard">
+      <div class="ai-card-header">
+        <div class="ai-name">
+          <div class="ai-badge claude-badge">C</div>
+          <span>Claude</span>
+        </div>
+        <div class="status-dot inactive"></div>
+      </div>
+      <div class="ai-info error">未检测到</div>
+    </div>
+
+    <div class="ai-card inactive" id="geminiCard">
+      <div class="ai-card-header">
+        <div class="ai-name">
+          <div class="ai-badge gemini-badge">G</div>
+          <span>Gemini</span>
+        </div>
+        <div class="status-dot inactive"></div>
+      </div>
+      <div class="ai-info error">未检测到</div>
+    </div>
+
+    <button class="open-tabs-btn" onclick="openAllAITabs()">
+      📂 一键打开所有AI标签页
+    </button>
+  </div>
+
+  <div class="input-area">
+    <div class="input-label">💬 输入问题</div>
+    <textarea
+      id="questionInput"
+      placeholder="在这里输入你的问题...&#10;&#10;例如：&#10;- 什么是量子计算？&#10;- 如何学习机器学习？&#10;- 解释相对论的基本概念"
+    ></textarea>
+
+    <div class="button-group">
+      <button class="btn btn-primary" id="sendBtn" onclick="sendToAll()">
+        <span>🚀</span>
+        <span>发送到所有AI</span>
+      </button>
+      <button class="btn btn-secondary" onclick="clearInput()">
+        <span>🗑️</span>
+        <span>清空</span>
+      </button>
+    </div>
+
+    <div class="hint">
+      快捷键: <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> 发送
+    </div>
+  </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Multi Sender</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 60px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.2);
+      max-width: 1200px;
+      width: 100%;
+      min-height: 600px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .header .subtitle {
+      font-size: 18px;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 16px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: vertical;
+      transition: all 0.3s;
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .status-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .ai-status-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .ai-status-card.active {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border: 2px solid #28a745;
+    }
+
+    .ai-status-card.inactive {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+    }
+
+    .ai-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .ai-icon.active {
+      background: #28a745;
+    }
+
+    .ai-icon.inactive {
+      background: #dc3545;
+    }
+
+    .ai-info {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    button {
+      flex: 1;
+      padding: 20px 40px;
+      border: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #sendBtn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      flex: 2;
+    }
+
+    #sendBtn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    #sendBtn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #clearBtn {
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    #clearBtn:hover {
+      background: #e0e0e0;
+      transform: translateY(-2px);
+    }
+
+    #settingsBtn {
+      background: #fff;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    #settingsBtn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .status-message {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      text-align: center;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      display: block;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+
+    .status-message.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      display: block;
+    }
+
+    .tips {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+    }
+
+    .tips-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+
+    .tips-content {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #999;
+    }
+
+    .shortcuts {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f0f0f0;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 968px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 30px;
+      }
+
+      .header h1 {
+        font-size: 36px;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>
+        <span>🤖</span>
+        AI Multi Sender
+      </h1>
+      <div class="subtitle">一键向多个 AI 发送相同问题，节省时间，对比答案</div>
+    </div>
+
+    <div class="main-content">
+      <div class="input-section">
+        <div class="input-label">📝 输入你的问题</div>
+        <textarea
+          id="questionInput"
+          placeholder="在这里输入你想问的问题...&#10;&#10;例如：&#10;- 什么是量子计算？&#10;- 如何学习机器学习？&#10;- 解释一下相对论的基本概念&#10;&#10;提示：使用 Ctrl/Cmd + Enter 快速发送"
+        ></textarea>
+      </div>
+
+      <div class="status-section">
+        <div>
+          <div class="input-label">🎯 可用的 AI 平台</div>
+          <div id="aiStatusList">
+            <div class="ai-status-card inactive" id="chatgptCard">
+              <div class="ai-name">
+                <span class="ai-icon inactive"></span>
+                ChatGPT
+              </div>
+              <div class="ai-info">未检测到</div>
+            </div>
+
+            <div class="ai-status-card inactive" id="claudeCard">
+              <div class="ai-name">
+                <span class="ai-icon inactive"></span>
+                Claude
+              </div>
+              <div class="ai-info">未检测到</div>
+            </div>
+
+            <div class="ai-status-card inactive" id="geminiCard">
+              <div class="ai-name">
+                <span class="ai-icon inactive"></span>
+                Gemini
+              </div>
+              <div class="ai-info">未检测到</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button id="sendBtn" disabled>
+        <span>🚀</span>
+        <span>发送到所有 AI</span>
+      </button>
+      <button id="clearBtn">
+        <span>🗑️</span>
+        <span>清空</span>
+      </button>
+    </div>
+
+    <div id="statusMessage" class="status-message"></div>
+
+    <div class="tips">
+      <div class="tips-title">💡 使用提示</div>
+      <div class="tips-content">
+        • 先在不同标签页打开 ChatGPT、Claude 和 Gemini 并登录<br>
+        • 确保处于对话页面，不是设置或历史记录页面<br>
+        • 输入问题后点击发送，问题会自动填充到各个 AI 的输入框<br>
+        • 使用快捷键 <span class="shortcuts">Ctrl + Enter</span> 或 <span class="shortcuts">⌘ + Enter</span> 快速发送
+      </div>
+    </div>
+
+    <div class="footer">
+      AI Multi Sender v1.0 | 完全本地运行，不上传任何数据
+    </div>
+  </div>
+
+  <script src="fullpage.js"></script>
+</body>
+</html>
