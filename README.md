@@ -1,6 +1,22 @@
 # AI Multi Sender
 
-一个 Chrome 扩展：一键把同一个问题发到你勾选的平台。
+一个 Chrome 扩展：一键把同一个问题发送到多个 AI 平台（ChatGPT / Claude / Gemini / Grok）。
+
+适合需要快速对比不同模型回答的人：运营、开发者、内容创作者、AI 重度用户。
+
+**一句话价值**：一次输入，多端同步发送，马上横向对比答案。
+
+**English summary**: A Chrome extension to send one prompt to multiple AI platforms at once.
+
+## 搜索关键词（Keywords）
+
+ChatGPT 扩展、Claude 扩展、Gemini 扩展、Grok 扩展、AI 对比工具、多模型对比、AI Prompt 批量发送、multi AI sender、prompt comparison、Chrome AI extension
+
+## 为什么这个工具好用
+
+- 不改变你原来的使用习惯，只是把“重复输入”变成“一次发送”
+- 可按需勾选平台，不强制绑定某个模型
+- 同题对比更快，适合做方案评估、答案交叉验证、内容选型
 
 ## 支持平台
 
