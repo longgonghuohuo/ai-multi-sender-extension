@@ -1,16 +1,19 @@
 # AI Multi Sender
 
-一个 Chrome 扩展：一键把同一个问题发送到多个 AI 平台（ChatGPT / Claude / Gemini / Grok）。
+一个 Chrome 扩展：一键把同一个问题群发到多个 AI 助手（ChatGPT / Claude / Gemini / Grok / DeepSeek）。
 
-适合需要快速对比不同模型回答的人：运营、开发者、内容创作者、AI 重度用户。
+适合需要快速对比不同模型回答的人：运营、开发者、内容创作者、AI 重度用户。你可以只选你在用的平台，不强制全部开启。
 
-**一句话价值**：一次输入，多端同步发送，马上横向对比答案。
+## 中英简介（可搜索）
 
-**English summary**: A Chrome extension to send one prompt to multiple AI platforms at once.
+**中文**：一键都可以发给你的 GPT 助理；现在也支持 DeepSeek；一键群发所有 AI 助手，马上对比答案。  
+**English**: Send one prompt to all your AI assistants in one click (now including DeepSeek), then compare responses side by side.
+
+**一句话价值**：一次输入，多 AI 同步发送，省时间、提效率、方便做答案对比。
 
 ## 搜索关键词（Keywords）
 
-ChatGPT 扩展、Claude 扩展、Gemini 扩展、Grok 扩展、AI 对比工具、多模型对比、AI Prompt 批量发送、multi AI sender、prompt comparison、Chrome AI extension
+ChatGPT 扩展、Claude 扩展、Gemini 扩展、Grok 扩展、DeepSeek 扩展、AI 对比工具、多模型对比、AI Prompt 批量发送、multi AI sender、AI assistant broadcast、prompt comparison、Chrome AI extension
 
 ## 为什么这个工具好用
 
@@ -24,6 +27,7 @@ ChatGPT 扩展、Claude 扩展、Gemini 扩展、Grok 扩展、AI 对比工具�
 - Claude (`claude.ai`)
 - Gemini (`gemini.google.com`)
 - Grok (`grok.com`)
+- DeepSeek (`chat.deepseek.com`)
 
 你可以任选一个、两个或多个平台，不强制必须三个都用。
 
