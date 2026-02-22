@@ -91,6 +91,72 @@
       color: #999;
     }
 
+    .options-panel {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f8f9ff;
+      border: 1px solid #e6e8ff;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .options-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .options-label {
+      color: #333;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 72px;
+    }
+
+    .site-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .site-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #d7ddff;
+      background: white;
+      color: #333;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .site-chip input {
+      margin: 0;
+      accent-color: #667eea;
+    }
+
+    .mode-select {
+      min-width: 260px;
+      padding: 8px 10px;
+      border: 1px solid #d7ddff;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #333;
+      background: white;
+    }
+
+    .session-hint {
+      color: #5d6384;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
     .button-group {
       display: flex;
       gap: 15px;
@@ -346,7 +412,7 @@
     <div class="header">
       <div class="logo">🤖</div>
       <div class="title">AI Multi Sender</div>
-      <div class="subtitle">一键向 ChatGPT、Claude、Gemini 发送相同问题</div>
+      <div class="subtitle">一键向 ChatGPT、Claude、Gemini、Grok 发送相同问题</div>
     </div>
 
     <div class="main">
@@ -356,10 +422,49 @@
         placeholder="在这里输入问题...&#10;&#10;例如：&#10;• 什么是量子计算？&#10;• 如何学习机器学习？&#10;• 比较不同编程语言的优缺点"
       ></textarea>
 
+      <div class="options-panel">
+        <div class="options-row">
+          <span class="options-label">发送目标</span>
+          <div class="site-filters">
+            <label class="site-chip">
+              <input type="checkbox" data-site="chatgpt" checked>
+              <span>ChatGPT</span>
+            </label>
+            <label class="site-chip">
+              <input type="checkbox" data-site="claude" checked>
+              <span>Claude</span>
+            </label>
+            <label class="site-chip">
+              <input type="checkbox" data-site="gemini" checked>
+              <span>Gemini</span>
+            </label>
+            <label class="site-chip">
+              <input type="checkbox" data-site="grok">
+              <span>Grok</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="options-row">
+          <span class="options-label">会话策略</span>
+          <select id="chatModeSelect" class="mode-select">
+            <option value="auto">自动判断（10分钟内继续，30分钟外新开）</option>
+            <option value="ask">每次发送前询问（继续 / 新开）</option>
+            <option value="continue">继续之前聊天（能复用就复用）</option>
+            <option value="new">总是开启新窗口</option>
+          </select>
+          <button class="history-btn" id="openSelectedBtn">🪟 并排打开所选</button>
+        </div>
+
+        <div class="session-hint" id="sessionHint">
+          当前建议：首次使用先点“并排打开所选”，后续发送可选择“继续之前聊天”。
+        </div>
+      </div>
+
       <div class="button-group">
         <button class="btn btn-primary" id="sendBtn">
           <span>🚀</span>
-          <span>发送到所有AI</span>
+          <span>发送到所选AI</span>
         </button>
         <button class="btn btn-secondary" id="clearBtn">
           <span>🗑️</span>
